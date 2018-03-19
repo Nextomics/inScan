@@ -49,12 +49,12 @@ class fragments(object):
         #'other' fragment in SA:Z
         sa_tag = None
         for tag in optional_tags:
-            if tag[:3] == "SA:Z":
-                sa_tag = tag[3:]
+            if tag[:5] == "SA:Z:":
+                sa_tag = tag[5:]
         if not sa_tag == None:
-            sa_fields = sa_tag.split(";")
+            sa_fields = sa_tag.split(";")[:-1]
             for i in sa_fields:
-                ref, ref_start, strand, cigar, mapq = i.split(",")
+                ref, ref_start, strand, cigar, mapq = i.split(",")[:5]
                 _fragment = fragment(qname,ref,ref_start,strand,cigar,mapq)
                 _fragments.append(_fragment)
         return _fragments
