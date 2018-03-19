@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env python3
 #author: archieyoung <yangqi2@grandomics.com>
 import pysam
 import sys
@@ -19,7 +19,6 @@ class fragment(object):
             self.cigar = cigar_parse.Cigar(cigar_parse.Cigar(cigar).reversed_cigar)
         self.mapq = mapq
         self.query_aligned_len = self.cigar.query_mapped_len
-
         self.ref_end = self.ref_start + self.cigar.ref_len - 1
         self.query_start = self.cigar.query_start
         self.query_end = self.cigar.query_end
