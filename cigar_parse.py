@@ -41,29 +41,36 @@ class Cigar(object):
                 self.cigar_ops.append((int(num), op))
                 num = ""
                 op = ""
+        self.query_len = self._query_len()
+        self.query_mapped_len = self._query_mapped_len()
+        self.ref_len = self._ref_len()
+        self.aligned_len = self._aligned_len()
+        self.query_start = self._query_start()
+        self.query_end = self._query_end()
+        self.reversed_cigar = self._cigar_reverse()
 
-    def query_len(self):
+    def _query_len(self):
         #query_len = num of hard-clip bases + num of query_consumes bases
         query_len_operations = self.query_consumes + ["H"]
         return sum([co[0] for co in self.cigar_ops \
                 if co[1] in query_len_operations])
 
-    def query_mapped_len(self):
+    def _query_mapped_len(self):
         query_mapped_len_operations = ["M","I","=","X"]
         return sum([co[0] for co in self.cigar_ops \
                 if co[1] in query_mapped_len_operations])
 
-    def ref_len(self):
+    def _ref_len(self):
         return sum([co[0] for co in self.cigar_ops \
                 if co[1] in self.ref_consumes])
 
-    def aligned_len(self):
+    def _aligned_len(self):
         #query_mapped_len = except "H"s and "S"s
         not_aligned_len_operations = ["H", "S"]
         return sum([co[0] for co in self.cigar_ops \
                 if co[1] not in not_aligned_len_operations])
 
-    def query_start(self):
+    def _query_start(self):
         #one based start
         #"H" and "S" appear togather is not considered, eg "10H5S89M"
         #suit for "10H89M" or "10S89M"
@@ -72,16 +79,16 @@ class Cigar(object):
         else:
             return 1
 
-    def query_end(self):
+    def _query_end(self):
         #one based end
         #"H" and "S" appear togather is not considered, eg "89M5S10H"
         #suit for "89M10H" or "89M10S"
         if self.cigar_ops[-1][1] == "H" or self.cigar_ops[-1][1] == "S":
-            return self.query_len()-self.cigar_ops[-1][0]
+            return self._query_len()-self.cigar_ops[-1][0]
         else:
-            return self.query_len()
+            return self._query_len()
 
-    def cigar_reverse(self):
+    def _cigar_reverse(self):
         return "".join(["".join([str(co[0]),co[1]]) for co in self.cigar_ops][::-1])
 
 
