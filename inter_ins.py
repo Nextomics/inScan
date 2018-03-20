@@ -20,7 +20,7 @@ class insertion(object):
 class inter_ins(object):
     def __init__(self,read_fragments,min_len):
         self.read_fragments = sorted(read_fragments,key=lambda x:x.query_start)
-        self.insertions = self._insertions()
+        self.insertions = self._get_insert()
 
     def _get_insert(self):
         if len(self.read_fragments) <= 1:
@@ -31,16 +31,31 @@ class inter_ins(object):
         for fr in read_fragments_combine:
             if fr[0].strand != fr[1].strand or fr[0].ref != fr[1].ref:
                 return 0
-            ins_length = ((fr[1].query_start-fr[0].query_end)-
+            #fr_relativa_dist = fragment dist on reads - fragment dist on ref
+            fr_relativa_dist = ((fr[1].query_start-fr[0].query_end)-
                     (fr[1].ref_start-fr[0].ref_end))
-            if ins_length >= min_len:
-                if fr[1].ref_start > fr[0].ref_end:
+            if fr_relativa_dist > 0:
+                #define ins_len and asign 0 to it
+                ins_len = 0
+                #insertion
+                #case1 and case2
+                if fr[1].ref_start >= fr[0].ref_end:
+                    ins_len = fr[1].query_start - fr[0].query_end
                     ins_ref_start = fr[0].ref_end
                     ins_ref_end = fr[1].ref_start
-                else:
-                    ins_ref_start = fr[1].ref_start
+                #case3
+                if (fr[1].ref_start < fr[0].ref_end and
+                        fr[1].ref_end >= fr[0].ref_end):
+                    ins_len = fr_relativa_dist
+                    ins_ref_start = fr[0].ref_end
+                    ins_ref_end = fr[0].ref_end
+                #case4
+                if (fr[1].ref_start < fr[0].ref_end and
+                        fr[1].ref_end < fr[0].ref_end):
+                    ins_len = fr[1].query_end - fr[0].query_end
+                    ins_ref_start = fr[0].ref_end
                     ins_ref_end = fr[0].ref_end
             _ins = insertion(fr[0].query_name,fr[0].ref,ins_ref_start,
-                    ins_ref_end,ins_length)
+                    ins_ref_end,ins_len)
             _insertions.append(_ins)
         return _insertions
