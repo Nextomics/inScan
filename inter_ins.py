@@ -18,8 +18,9 @@ class insertion(object):
         self.length = length
 
 class inter_ins(object):
-    def __init__(self,read_fragments):
+    def __init__(self,read_fragments,min_len):
         self.read_fragments = sorted(read_fragments,key=lambda x:x.query_start)
+        self.insertions = self._insertions()
 
     def _get_insert(self):
         if len(self.read_fragments) <= 1:
@@ -30,12 +31,16 @@ class inter_ins(object):
         for fr in read_fragments_combine:
             if fr[0].strand != fr[1].strand or fr[0].ref != fr[1].ref:
                 return 0
-            if ((fr[1].query_start-fr[0].query_end)-
-                    (fr[1].ref_start-fr[0].ref_end)) >= min_len:
+            ins_length = ((fr[1].query_start-fr[0].query_end)-
+                    (fr[1].ref_start-fr[0].ref_end))
+            if ins_length >= min_len:
                 if fr[1].ref_start > fr[0].ref_end:
                     ins_ref_start = fr[0].ref_end
                     ins_ref_end = fr[1].ref_start
                 else:
                     ins_ref_start = fr[1].ref_start
                     ins_ref_end = fr[0].ref_end
-
+            _ins = insertion(fr[0].query_name,fr[0].ref,ins_ref_start,
+                    ins_ref_end,ins_length)
+            _insertions.append(_ins)
+        return _insertions
