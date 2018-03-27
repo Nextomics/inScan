@@ -24,32 +24,32 @@ class fragment(object):
         self.query_end = self.cigar.query_end
 
 class fragments(object):
-    def __init__(self,sam_record,sam):
+    def __init__(self,sam_record):
         #sam is a pysam AlignmentFile
-        self.sam = sam
         self.sam_record = sam_record
         self.read_fragments = self._get_fragments()
 
     def _get_fragments(self):
         _fragments = []
-        sam_str = self.sam_record.tostring(self.sam)
         #'main' fragment
-        fields = sam_str.strip().split("\t")
-        (qname, flag, ref, ref_start, mapq,
-                cigar, mrnm, mpos, tlen, seq, qual) = fields[:11]
+        qname = self.sam_record.query_name
+        ref = self.sam_record.reference_name
+        ref_start = self.sam_record.reference_start + 1
+        mapq = self.sam_record.mapping_quality
+        cigar = self.sam_record.cigarstring
         if self.sam_record.is_reverse:
             strand = "-"
         else:
             strand = "+"
         _fragment = fragment(qname,ref,ref_start,strand,cigar,mapq)
         _fragments.append(_fragment)
-        #optional tags
-        optional_tags = fields[11:]
         #'other' fragment in SA:Z
         sa_tag = None
-        for tag in optional_tags:
-            if tag[:5] == "SA:Z:":
-                sa_tag = tag[5:]
+        try:
+            sa_tag = self.sam_record.get_tag("SA")
+        except KeyError:
+            #not a split reads or sam format error
+            pass
         if not sa_tag == None:
             sa_fields = sa_tag.split(";")[:-1]
             for i in sa_fields:
@@ -61,7 +61,7 @@ class fragments(object):
 def main():
     sam = pysam.AlignmentFile(sys.argv[1],"rb")
     for i in sam:
-        read_fragments = fragments(i,sam).read_fragments
+        read_fragments = fragments(i).read_fragments
         for j in read_fragments:
             print("\t".join([str(k) for k in [j.query_name,j.ref,j.ref_start,
                 j.ref_end,j.query_start,j.query_end,j.strand,j.mapq,
