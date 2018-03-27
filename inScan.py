@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #author:archieyoung<yangqi2@grandomics.com>
 import sys
+import json
 import pysam
 
 
@@ -40,6 +41,7 @@ def overlap(a,b):
         return 1
 
 def regions_inScan(sam_io,bed,min_ins):
+    region_ins_all = {}
     for region in bed:
         #fetch sam
         sam = sam_io.fetch(region[0],region[1],region[2])
@@ -50,9 +52,14 @@ def regions_inScan(sam_io,bed,min_ins):
             for i in ins[query_name]:
                 if overlap([i.ref,i.ref_start,i.ref_end],
                         [region[0],region[1],region[2]]):
-                    print(i.query_name,i.ref,i.ref_start,i.ref_end,i.length)
-                    keep.append(i)
+                    #print(i.query_name,i.ref,i.ref_start,i.ref_end,i.length)
+                    keep.append([i.ref,i.ref_start,i.ref_end,i.length])
+            if keep == []:
+                continue
             ins_in_region.setdefault(query_name,keep)
+            region_ins_all.setdefault(region[0]+":"+str(region[1])+"-"+str(region[2])
+                    ,ins_in_region)
+    return region_ins_all
 
 def main():
     sam_io = pysam.AlignmentFile(sys.argv[1],"rb")
@@ -61,7 +68,9 @@ def main():
         for line in bed_io:
             fields = line.strip().split("\t")
             bed.append((fields[0],int(fields[1]),int(fields[2])))
-    regions_inScan(sam_io,bed,20)
+    region_ins_all = regions_inScan(sam_io,bed,20)
+    with open(sys.argv[3],"w") as out_json:
+        json.dump(region_ins_all, out_json, sort_keys = False, indent=4)
 
 if __name__ == "__main__":
     main()
