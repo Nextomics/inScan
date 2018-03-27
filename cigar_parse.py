@@ -21,7 +21,6 @@ aligned_len
 ref    ATTTGC-CGA
 query  ATT-GCCCGA
 """
-#qstart and qend need to be modified, 'fisrt M' as start or end pos
 
 class Cigar(object):
 
