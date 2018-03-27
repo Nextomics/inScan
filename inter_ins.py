@@ -20,6 +20,7 @@ class insertion(object):
 class inter_ins(object):
     def __init__(self,read_fragments,min_len):
         self.read_fragments = sorted(read_fragments,key=lambda x:x.query_start)
+        self.min_len = min_len
         self.insertions = self._get_insert()
 
     def _get_insert(self):
@@ -30,32 +31,66 @@ class inter_ins(object):
         read_fragments_combine = combinations(self.read_fragments,2)
         for fr in read_fragments_combine:
             if fr[0].strand != fr[1].strand or fr[0].ref != fr[1].ref:
-                return 0
-            #fr_relativa_dist = fragment dist on reads - fragment dist on ref
-            fr_relativa_dist = ((fr[1].query_start-fr[0].query_end)-
-                    (fr[1].ref_start-fr[0].ref_end))
-            if fr_relativa_dist > 0:
-                #define ins_len and asign 0 to it
-                ins_len = 0
-                #insertion
-                #case1 and case2
-                if fr[1].ref_start >= fr[0].ref_end:
-                    ins_len = fr[1].query_start - fr[0].query_end
-                    ins_ref_start = fr[0].ref_end
-                    ins_ref_end = fr[1].ref_start
-                #case3
-                if (fr[1].ref_start < fr[0].ref_end and
-                        fr[1].ref_end >= fr[0].ref_end):
-                    ins_len = fr_relativa_dist
-                    ins_ref_start = fr[0].ref_end
-                    ins_ref_end = fr[0].ref_end
-                #case4
-                if (fr[1].ref_start < fr[0].ref_end and
-                        fr[1].ref_end < fr[0].ref_end):
-                    ins_len = fr[1].query_end - fr[0].query_end
-                    ins_ref_start = fr[0].ref_end
-                    ins_ref_end = fr[0].ref_end
+                continue
+
+            if fr[0].strand == "+":
+                #imply that fr[1].strand == "+"
+                #fr_relativa_dist = fragment dist on reads - fragment dist on ref
+                fr_relativa_dist = ((fr[1].query_start-fr[0].query_end)-
+                        (fr[1].ref_start-fr[0].ref_end))
+                if fr_relativa_dist > 0:
+                    #define ins_len and asign 0 to it
+                    ins_len = 0
+                    #insertion
+                    #case1 and case2
+                    if fr[1].ref_start >= fr[0].ref_end:
+                        ins_len = fr[1].query_start - fr[0].query_end
+                        ins_ref_start = fr[0].ref_end
+                        ins_ref_end = fr[1].ref_start
+                    #case3
+                    if (fr[1].ref_start < fr[0].ref_end and
+                            fr[1].ref_end >= fr[0].ref_end):
+                        ins_len = fr_relativa_dist
+                        ins_ref_start = fr[0].ref_end
+                        ins_ref_end = fr[0].ref_end
+                    #case4
+                    if (fr[1].ref_start < fr[0].ref_end and
+                            fr[1].ref_end < fr[0].ref_end):
+                        ins_len = fr[1].query_end - fr[0].query_end
+                        ins_ref_start = fr[0].ref_end
+                        ins_ref_end = fr[0].ref_end
+            else:
+                #strand are "-"
+                #fr_relativa_dist = fragment dist on reads - fragment dist on ref
+                fr_relativa_dist = ((fr[1].query_start-fr[0].query_end)-
+                        (fr[0].ref_start-fr[1].ref_end))
+                if fr_relativa_dist > 0:
+                    #define ins_len and asign 0 to it
+                    ins_len = 0
+                    #insertion
+                    #case1 or case2
+                    if fr[0].ref_start >= fr[1].ref_end:
+                        ins_len = fr[1].query_start - fr[0].query_end
+                        ins_ref_start = fr[1].ref_end
+                        ins_ref_end = fr[0].ref_start
+                        #print(fr[0].query_name+" yes case1 or case2")
+                    #case3
+                    if (fr[0].ref_start < fr[1].ref_end and
+                            fr[0].ref_end >= fr[1].ref_end):
+                        ins_len = fr_relativa_dist
+                        ins_ref_start = fr[1].ref_end
+                        ins_ref_end = fr[1].ref_end
+                        #print(fr[0].query_name+" yes case3")
+                    #case4
+                    if (fr[0].ref_start < fr[1].ref_end and
+                            fr[0].ref_end < fr[1].ref_end):
+                        ins_len = fr[1].query_end - fr[0].query_end
+                        ins_ref_start = fr[1].ref_end
+                        ins_ref_end = fr[1].ref_end
+                        #print(fr[0].query_name+" yes case4")
+
             _ins = insertion(fr[0].query_name,fr[0].ref,ins_ref_start,
                     ins_ref_end,ins_len)
-            _insertions.append(_ins)
+            if _ins.length >= self.min_len:
+                _insertions.append(_ins)
         return _insertions
