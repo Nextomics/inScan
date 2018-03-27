@@ -59,6 +59,8 @@ class inter_ins(object):
                         ins_len = fr[1].query_end - fr[0].query_end
                         ins_ref_start = fr[0].ref_end
                         ins_ref_end = fr[0].ref_end
+                else:
+                    continue
             else:
                 #strand are "-"
                 #fr_relativa_dist = fragment dist on reads - fragment dist on ref
@@ -88,6 +90,8 @@ class inter_ins(object):
                         ins_ref_start = fr[1].ref_end
                         ins_ref_end = fr[1].ref_end
                         #print(fr[0].query_name+" yes case4")
+                else:
+                    continue
 
             _ins = insertion(fr[0].query_name,fr[0].ref,ins_ref_start,
                     ins_ref_end,ins_len)
