@@ -6,6 +6,7 @@ Insertion scan for noise long reads
 
 ```sh
 git clone https://github.com/Archieyoung/inScan.git
-make
+cd inScan
+python3 inScan.py input.bam input.bed output.json
 ```
 
