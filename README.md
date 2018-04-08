@@ -1,6 +1,6 @@
 # inScan
 
-Insertion scan for noise long reads
+Insertion scan for noisy long reads
 
 # Getting started
 
