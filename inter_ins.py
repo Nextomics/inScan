@@ -26,6 +26,7 @@ class inter_ins(object):
     def _get_insert(self):
         if len(self.read_fragments) <= 1:
             return 0
+
         _insertions = []
         #A,B
         read_fragments_combine = combinations(self.read_fragments,2)
@@ -96,6 +97,7 @@ class inter_ins(object):
 
             _ins = insertion(fr[0].query_name,fr[0].ref,ins_ref_start,
                     ins_ref_end,ins_len)
+
             if _ins.length >= self.min_len:
                 if _ins.ref_start in ins_pos_left:
                     continue
