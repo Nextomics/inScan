@@ -79,21 +79,18 @@ class inter_ins(object):
                         ins_len = fr[1].query_start - fr[0].query_end
                         ins_ref_start = fr[1].ref_end
                         ins_ref_end = fr[0].ref_start
-                        #print(fr[0].query_name+" yes case1 or case2")
                     #case3
                     if (fr[0].ref_start < fr[1].ref_end and
                             fr[0].ref_end >= fr[1].ref_end):
                         ins_len = fr_relativa_dist
                         ins_ref_start = fr[1].ref_end
                         ins_ref_end = fr[1].ref_end
-                        #print(fr[0].query_name+" yes case3")
                     #case4
                     if (fr[0].ref_start < fr[1].ref_end and
                             fr[0].ref_end < fr[1].ref_end):
                         ins_len = fr[1].query_end - fr[0].query_end
                         ins_ref_start = fr[1].ref_end
                         ins_ref_end = fr[1].ref_end
-                        #print(fr[0].query_name+" yes case4")
                 else:
                     continue
 
