@@ -29,6 +29,10 @@ class inter_ins(object):
         _insertions = []
         #A,B
         read_fragments_combine = combinations(self.read_fragments,2)
+
+        #fix bugs that the same insertion is counted more than once
+        ins_pos_left = []
+
         for fr in read_fragments_combine:
             if fr[0].strand != fr[1].strand or fr[0].ref != fr[1].ref:
                 continue
@@ -96,5 +100,9 @@ class inter_ins(object):
             _ins = insertion(fr[0].query_name,fr[0].ref,ins_ref_start,
                     ins_ref_end,ins_len)
             if _ins.length >= self.min_len:
-                _insertions.append(_ins)
+                if _ins.ref_start in ins_pos_left:
+                    continue
+                else:
+                    ins_pos_left.append(_ins.ref_start)
+                    _insertions.append(_ins)
         return _insertions
