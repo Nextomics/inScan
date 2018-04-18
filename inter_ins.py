@@ -21,9 +21,9 @@ class inter_ins(object):
         self.insertions = self._get_insert()
 
     def _has_ins(self,fr1,fr2):
-        if fr1.strand != fr2.strand or fr1.ref != fr2.ref:
+        if fr1.ref != fr2.ref or fr1.strand != fr2.strand:
             return 0
-        #then fr1 and fr2 are in the same ref and hava same strand
+        #then fr1 and fr2 are in the same ref and hava the same strand
         if fr1.strand == "+":
             #fr_relativa_dist = fragment dist on reads - fragment dist on ref
             fr_relativa_dist = ((fr2.query_start-fr1.query_end)-
@@ -34,6 +34,13 @@ class inter_ins(object):
         if fr_relativa_dist > 0:
             #has insertion
             return fr_relativa_dist
+        else:
+            return 0
+
+    def _is_same_ref(self,fr1,fr2):
+        #fragment1 and fragment2 are in the same ref
+        if fr1.ref == fr2.ref:
+            return 1
         else:
             return 0
 
@@ -104,6 +111,9 @@ class inter_ins(object):
                             fr,has_ins)
                     if _ins.length >= self.min_len:
                         _insertions.append(_ins)
+                        break
+                else:
+                    if self._is_same_ref(self.read_fragments[0],fr):
                         break
             self.read_fragments.pop(0)
 
