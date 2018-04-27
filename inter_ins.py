@@ -111,7 +111,7 @@ class inter_ins(object):
                             fr,has_ins)
                     if _ins.length >= self.min_len:
                         _insertions.append(_ins)
-                        break
+                    break
                 else:
                     if self._is_same_ref(self.read_fragments[0],fr):
                         break
