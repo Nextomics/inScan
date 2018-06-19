@@ -2,7 +2,7 @@
 
 inScan is devoloping for finding genomoic insertion variation from long 
 reads(from both Pacbio and Nanopore sequencing).
-inScan differs from the published stat of art Structure Variation detecting 
+inScan differs from the published state of art Structure Variation detecting 
 tools(Sniffles and NanoSV) for long reads sequencing technology in two ways. First, 
 inScan can find complex insertions when the insert sequence mapped to another 
 chromosome. Second, inScan detects insertions in a given region, therefore useful 
