@@ -26,7 +26,7 @@ python3 inScan.py input.bam input.bed output.json
 inScan takes three positional arguments, a bam file, a bed file, a output file name.
 
 inScan has been tested using NGMLR, BWA mem, Minimap2 output bam files. 
-Generally, inScan will works for a bam file with "SA" tag.
+Generally, inScan will work for a bam file with "SA" tag.
 
 bed file contains the regions to be tested.
 
