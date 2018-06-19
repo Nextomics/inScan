@@ -9,6 +9,11 @@ chromosome. Second, inScan detects insertions in a given region, therefore usefu
 for quickly checking if there are insertions in the region(Short Tandem Repeat region
 for example) of interest.
 
+# Dependency
+
+Python3.6.2 or later
+
+* pysam
 
 # Getting started
 
