@@ -18,7 +18,7 @@ Python3.6.2 or later
 # Getting started
 
 ```sh
-git clone https://github.com/Archieyoung/inScan.git
+git clone git@github.com:Nextomics/InScan.git
 cd inScan
 python3 inScan.py input.bam input.bed output.json
 ```
