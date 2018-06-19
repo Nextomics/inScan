@@ -29,7 +29,9 @@ regions of interest, a output file name.
 inScan has been tested using NGMLR, BWA mem, Minimap2 output bam files. 
 Generally, inScan will works for a bam file with "SA" tag.
 
-output json: {"region":{"reads":[["chromosom","start","end","insert_size"],...],...},...}
+output json: {"region":{"reads":[["chromosome","start","end","insert_size"],...],...},...}
+
+
 
 
 
