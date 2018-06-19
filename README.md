@@ -23,3 +23,15 @@ cd inScan
 python3 inScan.py input.bam input.bed output.json
 ```
 
+inScan takes three positional arguments, a bam file, a bed file store 
+regions of interest, a output file name.
+
+inScan has been tested using NGMLR, BWA mem, Minimap2 output bam files. 
+Generally, inScan will works for a bam file with "SA" tag.
+
+output json: {"region":{"reads":[["chromosom","start","end","insert_size"],...],...},...}
+
+
+
+
+
