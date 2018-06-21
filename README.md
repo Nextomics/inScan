@@ -1,6 +1,6 @@
 # inScan
 
-inScan is devoloping for finding genomoic insertion variation from long 
+inScan is devoloping for finding genomic insertion variation from long 
 reads(from both Pacbio and Nanopore sequencing).
 inScan differs from the published state of art Structure Variation detecting 
 tools(Sniffles and NanoSV) for long reads sequencing technology in two ways. First, 
@@ -18,7 +18,7 @@ Python3.6.2 or later
 # Getting started
 
 ```sh
-git clone git@github.com:Nextomics/InScan.git
+git clone git@github.com:Nextomics/inScan.git
 cd inScan
 python3 inScan.py input.bam input.bed output.json
 ```
